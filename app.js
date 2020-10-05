@@ -8,7 +8,13 @@ app.get("/", (req, res) => res.send("Hello World"));
 const { mongoURI: db, port } = require("./config/config");
 
 mongoose
-  .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(db, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+  })
+  // .then(() => mongoose.connection.db.dropCollection("emailboxes")) // TODO remove
+  // .then(() => mongoose.connection.db.dropCollection("emails")) // TODO remove
   .then(() => console.log("Connected to MongoDB successfully"))
   .catch((err) => console.log(err));
 startSmtpServer();

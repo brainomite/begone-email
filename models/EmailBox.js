@@ -8,7 +8,7 @@ const {
 
 const EmailBoxesSchema = new Schema(
   {
-    email: {
+    _id: {
       type: String,
       required: true,
     },
@@ -22,4 +22,5 @@ const EmailBoxesSchema = new Schema(
   }
 );
 
-module.exports = EmailBox = model("EmailBox", EmailBoxesSchema);
+module.exports = EmailBox = model("EmailBox", EmailBoxesSchema
+);

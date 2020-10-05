@@ -5,25 +5,56 @@ const {
 } = require("mongoose");
 
 const { smtpPort } = require("../../config/config");
-const Email = require("../../models/Email");
+const EmailBox = require("../../models/EmailBox");
+const { Email } = require("../../models/Email");
 
 const processIncomingEmail = (emailBuffer) => {
   const emailObjectId = new ObjectId();
-  simpleParser(emailBuffer, {}, (err, email) => {
+  simpleParser(emailBuffer, {}, async (err, parsedEmail) => {
     if (err) {
       console.log("err: ", err);
       return;
     }
-    console.log(email);
+    const toAddress = parsedEmail.to.value[0].address;
+    const fromAddress = parsedEmail.from.value[0].address;
+
+    // just create
+    const email = new Email({
+      to: toAddress,
+      from: fromAddress,
+      subject: parsedEmail.subject,
+      date: parsedEmail.date,
+      htmlBody: parsedEmail.html,
+    });
+    try {
+      const savedEmail = await email.save();
+      console.log("result: ", savedEmail);
+      const emailBox = await EmailBox.findByIdAndUpdate(
+        toAddress,
+        {
+          _id: toAddress,
+          $push: { box: savedEmail._id },
+        },
+        { upsert: true }
+      );
+      console.log("emailBox: ", emailBox);
+    } catch (err) {
+      console.log("err2: ", err);
+    }
+    //   .then((emailBox) => {
+    //   })
+    //   .catch((err) => {
+    //     console.log("err2: ", err);
+    //   });
   });
 };
 
 function onData(stream, session, callback) {
   const streamChunks = [];
   stream.on("data", (chunk) => streamChunks.push(chunk));
-  stream.on("end", ()=>{
-    processIncomingEmail(Buffer.concat(streamChunks))
-    callback()
+  stream.on("end", () => {
+    processIncomingEmail(Buffer.concat(streamChunks));
+    callback();
   });
 }
 

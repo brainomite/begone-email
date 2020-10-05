@@ -8,17 +8,16 @@ const {
 
 const EmailSchema = new Schema(
   {
-    id: [ObjectId],
-    eml: Buffer,
-    attachments: [Buffer],
-    sender: String,
+    to: String,
+    from: String,
     subject: String,
-    timestamp: { type: Date, default: Date.UTC },
-    isRead: {type: Boolean, default: false},
+    date: { type: Date, default: Date.UTC },
+    htmlBody: String,
+    isRead: { type: Boolean, default: false },
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = Email = model("Email", EmailSchema);
+module.exports = { Email: model("Email", EmailSchema), EmailSchema };
