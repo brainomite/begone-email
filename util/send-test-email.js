@@ -1,7 +1,7 @@
 "use strict";
 const nodemailer = require("nodemailer");
-const { smtpPort } = require("../config/config");
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+const { smtpPort, hostName } = require("../config/config");
+// process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 module.exports = function sendTestEmail(recipientAddress) {
   // Message object
@@ -10,7 +10,7 @@ module.exports = function sendTestEmail(recipientAddress) {
     to: recipientAddress,
 
     // Subject of the message
-    subject: "AHEM mail test! ✔",
+    subject: "Begone Email test! ✔",
 
     // plaintext body
     text: "API: ✔ SMTP: ✔ DB: ✔",
@@ -28,7 +28,7 @@ module.exports = function sendTestEmail(recipientAddress) {
       {
         filename: "happy.png",
         path: "assets/happy.png",
-        cid: "bedgone@mydomain.com",
+        cid: "begone@mydomain.com",
       },
     ],
   };
@@ -45,7 +45,7 @@ module.exports = function sendTestEmail(recipientAddress) {
       debug: false, // include SMTP traffic in the logs
     },
     {
-      from: "AHEM Test! <alive-test@example.com",
+      from: `Begone Email Tester! <alive-test@${hostName}`,
       headers: {},
     }
   );
