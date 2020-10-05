@@ -22,5 +22,4 @@ const EmailBoxesSchema = new Schema(
   }
 );
 
-module.exports = EmailBox = model("EmailBox", EmailBoxesSchema
-);
+module.exports = EmailBox = model("EmailBox", EmailBoxesSchema);
