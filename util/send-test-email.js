@@ -3,10 +3,8 @@ const nodemailer = require("nodemailer");
 const { smtpPort } = require("../config/config");
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-function sendTestEmail() {
+module.exports = function sendTestEmail(recipientAddress) {
   // Message object
-  const recipientAddress = "alive-test@example.com";
-
   const message = {
     // Comma separated list of recipients
     to: recipientAddress,
@@ -22,14 +20,15 @@ function sendTestEmail() {
       '<p><b>API Test:</b> <span style="color: green">✔</span></p>' +
       '<p><b>SMTP Test:</b> <span style="color: green">✔</span></p>' +
       '<p><b>DB Test:</b> <span style="color: green">✔</span></p>' +
-      '<p><br/><img src="cid:ahem-tester@mydomain.com"/></p>',
+      '<p><br/><img src="cid:begone@mydomain.com"/></p>',
 
     // An array of attachments
     attachments: [
       // File Stream attachment
       {
-        filename: "ahem-happy.png",
-        path: "./README.MD",
+        filename: "happy.png",
+        path: "assets/happy.png",
+        cid: "bedgone@mydomain.com",
       },
     ],
   };
@@ -61,4 +60,3 @@ function sendTestEmail() {
   });
 }
 
-sendTestEmail();
