@@ -1,9 +1,6 @@
 const {
   Schema,
   model,
-  Schema: {
-    Types: { ObjectId },
-  },
 } = require("mongoose");
 
 const EmailSchema = new Schema(
@@ -20,4 +17,4 @@ const EmailSchema = new Schema(
   }
 );
 
-module.exports = { Email: model("Email", EmailSchema), EmailSchema };
+module.exports = Email = model("Email", EmailSchema);
