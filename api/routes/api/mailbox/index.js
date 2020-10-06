@@ -57,6 +57,15 @@ router.get(
     if (!validator.isMongoId(emailId)) {
       res.status(BAD_REQUEST).send(`${emailId} isn't in the correct format`);
     }
+    await EmailBox.findOneAndUpdate(
+      {
+        _id: email,
+        emails: { $elemMatch: { _id: { $eq: new ObjectId(emailId) } } },
+      },
+      {
+        $set: { "emails.$.isRead": true },
+      }
+    );
     const emailBoxWithSpecificEmail = await EmailBox.findById(email, {
       emails: { $elemMatch: { _id: { $eq: new ObjectId(emailId) } } },
     });
