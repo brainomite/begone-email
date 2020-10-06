@@ -1,7 +1,4 @@
-const {
-  Schema,
-  model,
-} = require("mongoose");
+const { Schema, model } = require("mongoose");
 
 const EmailSchema = new Schema(
   {
@@ -17,4 +14,4 @@ const EmailSchema = new Schema(
   }
 );
 
-module.exports = Email = model("Email", EmailSchema);
+module.exports = { EmailSchema, Email: model("Email", EmailSchema) };

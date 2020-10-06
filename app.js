@@ -20,6 +20,7 @@ mongoose
     useUnifiedTopology: true,
     useFindAndModify: false,
   })
+  // .then(() => mongoose.connection.db.dropCollection("emailboxes")) // TODO remove
   .then(() => console.log("Connected to MongoDB successfully"))
   .catch((err) => console.log(err));
 startSmtpServer();
