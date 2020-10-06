@@ -1,10 +1,5 @@
-const {
-  Schema,
-  model,
-  Schema: {
-    Types: { ObjectId },
-  },
-} = require("mongoose");
+const { Schema, model } = require("mongoose");
+const { EmailSchema } = require("./Email");
 
 const EmailBoxesSchema = new Schema(
   {
@@ -12,8 +7,8 @@ const EmailBoxesSchema = new Schema(
       type: String,
       required: true,
     },
-    box: {
-      type: [ObjectId],
+    emails: {
+      type: [EmailSchema],
       default: [],
     },
   },
