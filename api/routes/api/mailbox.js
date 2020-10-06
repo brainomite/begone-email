@@ -4,15 +4,27 @@ const CREATED = 201;
 const INTERNAL_SERVER_ERROR = 500;
 const validateEmail = require("../../../util/validate-email");
 const sendTestEmail = require("../../../util/send-test-email");
+const EmailBox = require("../../../models/EmailBox");
 
-router.get("/mailbox/:email", ({ params: { email } }, res) => {
+router.get("/mailbox/:email", async ({ params: { email } }, res) => {
   const validationFailure = validateEmail(email); // falsy if validation succeeds
   if (validationFailure) {
-    res.status(validationFailure.status);
-    res.send(validationFailure.msg);
+    res.status(validationFailure.status).send(validationFailure.msg);
     return;
   }
-  res.status(200).send({ msg: "This is the get mailbox route for " + email});
+  const emailBox = await EmailBox.findById(email, {
+    createdAt: false,
+    updatedAt: false,
+    __v: false,
+    "emails.htmlBody": false,
+    "emails.createdAt": false,
+    "emails.updatedAt": false,
+  });
+
+  // default is empty mailbox as we clean up
+  const mbToSend = emailBox || { _id: email, emails: [] };
+  res.status(200).send(mbToSend);
+  console.log("emailBox: ", emailBox);
 });
 
 router.post("/mailbox/:email", ({ params: { email } }, res) => {
