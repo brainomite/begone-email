@@ -1,29 +1,19 @@
 const express = require("express");
 const router = express.Router();
-const validator = require("validator");
-const BAD_REQUEST = 400;
-const UNPROCESSABLE_ENTITY = 422;
 const CREATED = 201;
 const INTERNAL_SERVER_ERROR = 500;
-const { domains } = require("../../../config/config");
+const validateEmail = require("../../../util/validate-email");
 const sendTestEmail = require("../../../util/send-test-email");
 
-router.get("/mailbox", (req, res) =>
-  res.json({ msg: "This is the get mailbox route" })
+router.get("/mailbox/:email", ({ params: { email } }, res) =>
+  res.send({ msg: "This is the get mailbox route for " + email })
 );
 
 router.post("/mailbox/:email", ({ params: { email } }, res) => {
-  if (!validator.isEmail(email)) {
-    res.status(BAD_REQUEST);
-    res.send("Value provided isn't an email address, aborting!");
-    return;
-  }
-  const emailDomain = email.split("@")[1];
-  if (!domains[emailDomain]) {
-    res.status(UNPROCESSABLE_ENTITY);
-    res.send(
-      `We are not accepting emails for the domain, ${emailDomain}, at this time.`
-    );
+  const validationFailure = validateEmail(email); // falsy if validation succeeds
+  if (validationFailure) {
+    res.status(validationFailure.status);
+    res.send(validationFailure.msg);
     return;
   }
   try {
