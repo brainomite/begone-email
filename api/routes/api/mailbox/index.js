@@ -24,7 +24,6 @@ router.get("/mailbox/:email", async ({ params: { email } }, res) => {
   // default is empty mailbox as we clean up
   const mbToSend = emailBox || { _id: email, emails: [] };
   res.status(200).send(mbToSend);
-  console.log("emailBox: ", emailBox);
 });
 
 router.post("/mailbox/:email", ({ params: { email } }, res) => {
