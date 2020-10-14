@@ -10,7 +10,13 @@ const validateEmail = require("../../../../util/validate-email");
 const sendTestEmail = require("../../../../util/send-test-email");
 const EmailBox = require("../../../../models/EmailBox");
 
-const handleGetMailbox = async ({ params: { email } }, res) => {
+router.get("/mailbox/:email", handleGetMailbox);
+router.post("/mailbox/:email", handlePostMailbox);
+router.get("/mailbox/:email/:emailId", handleGetEmail);
+
+module.exports = router;
+
+async function handleGetMailbox({ params: { email } }, res) {
   const validationFailure = validateEmail(email); // falsy if validation succeeds
   if (validationFailure) {
     res.status(validationFailure.status).send(validationFailure.msg);
@@ -28,9 +34,9 @@ const handleGetMailbox = async ({ params: { email } }, res) => {
   // default is empty mailbox as we clean up
   const mbToSend = emailBox || { _id: email, emails: [] };
   res.status(200).send(mbToSend);
-};
+}
 
-const handlePostMailbox = ({ params: { email } }, res) => {
+function handlePostMailbox({ params: { email } }, res) {
   const validationFailure = validateEmail(email); // falsy if validation succeeds
   if (validationFailure) {
     res.status(validationFailure.status).send(validationFailure.msg);
@@ -44,9 +50,9 @@ const handlePostMailbox = ({ params: { email } }, res) => {
       .status(INTERNAL_SERVER_ERROR)
       .send("Error sending test email to " + email);
   }
-};
+}
 
-const handleGetEmail = async ({ params: { email, emailId } }, res) => {
+async function handleGetEmail({ params: { email, emailId } }, res) {
   // validations
   const validationFailure = validateEmail(email); // falsy if validation succeeds
   if (validationFailure) {
@@ -81,10 +87,4 @@ const handleGetEmail = async ({ params: { email, emailId } }, res) => {
   }
 
   res.status(200).send(emailBoxWithSpecificEmail);
-};
-
-router.get("/mailbox/:email", handleGetMailbox);
-router.post("/mailbox/:email", handlePostMailbox);
-router.get("/mailbox/:email/:emailId", handleGetEmail);
-
-module.exports = router;
+}
