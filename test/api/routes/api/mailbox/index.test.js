@@ -38,7 +38,7 @@ describe("api/", () => {
     await mailbox.save();
   });
 
-  describe("/GET mailbox/:email", () => {
+  describe("GET mailbox/:email", () => {
     it("it should return return a default empty mailbox for the email provided if no email boxes are found", (done) => {
       chai
         .request(server)
@@ -88,7 +88,7 @@ describe("api/", () => {
     });
   });
 
-  describe("/GET mailbox/:email/:emailId", () => {
+  describe("GET mailbox/:email/:emailId", () => {
     it("it should return a mailbox with the email requested", (done) => {
       chai
         .request(server)
@@ -141,8 +141,54 @@ describe("api/", () => {
         .end((err, res) => {
           expect(res.status).to.equal(422);
           expect(res.error.text).to.contain("is not available");
-          done()
-        })
+          done();
+        });
+    });
+  });
+
+  describe("POST mailbox/:email/", () => {
+    it("it should return status 400, bad request, for a malformed email", (done) => {
+      chai
+        .request(server)
+        .post("/api/mailbox/test1@example")
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          expect(res.error.text).to.contain("isn't a valid email");
+          done();
+        });
+    });
+    it("it should return status 422, unprocessable entity, for a domain not permitted", (done) => {
+      chai
+        .request(server)
+        .post("/api/mailbox/test1@google.com")
+        .end((err, res) => {
+          expect(res.status).to.equal(422);
+          expect(res.error.text).to.contain("is not available");
+          done();
+        });
+    });
+    it("it should send an email to the specified box", async () => {
+      const email = "test@begone.email";
+      const res = await chai.request(server).post(`/api/mailbox/${email}`);
+      expect(res.status).to.equal(201);
+
+      // Arbitrary 750ms delay to await for database write as there is an async
+      // call behind the scenes to deliver email
+      await new Promise((resolve) => setTimeout(() => resolve(), 750));
+
+      const mailbox = await EmailBox.findById(email, {
+        createdAt: false,
+        updatedAt: false,
+        __v: false,
+        "emails.htmlBody": false,
+        "emails.createdAt": false,
+        "emails.updatedAt": false,
+      });
+      expect(mailbox._id).to.equal(email);
+      expect(mailbox.emails.length).to.equal(1);
+      expect(mailbox.emails[0].to).to.equal(email);
+      expect(mailbox.emails[0].from).to.equal("alive-test@begone.email");
+      expect(mailbox.emails[0].isRead).to.be.false;
     });
   });
 });
