@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "nodemon --exec 'mocha --delay'",
+    "test": "nodemon --exec 'mocha --delay --recursive -R spec'",
     "start": "node app.js",
     "server": "nodemon app.js",
     "send": "node util/mail-tester.js"
