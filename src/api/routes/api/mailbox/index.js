@@ -75,7 +75,7 @@ const handleGetEmail = async ({ params: { email, emailId } }, res) => {
   });
 
   // if there is no email found, report it
-  if (!emailBoxWithSpecificEmail.emails.length) {
+  if (!emailBoxWithSpecificEmail || !emailBoxWithSpecificEmail.emails.length) {
     res.status(404).send(`Specific email not found.`);
     return;
   }

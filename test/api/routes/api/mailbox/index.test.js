@@ -103,18 +103,25 @@ describe("api/", () => {
           expect(res.body.emails[0].from).to.equal("begone-tester@localhost");
           expect(res.body.emails[0].subject).to.equal("Test email 1");
           expect(res.body.emails[0].htmlBody).to.equal("The Body 1");
+          expect(res.body.emails[0].isRead).to.be.true;
           done();
         });
     });
 
-    it("it should return status 404, not found, when a specific email is not found", (done) => {
-      chai
+    it("it should return status 404, not found, when a specific email is not found", async () => {
+      await chai
         .request(server)
         .get("/api/mailbox/test1@example.com/" + new mongoose.Types.ObjectId())
-        .end((err, res) => {
+        .then((res) => {
           expect(res.status).to.equal(404);
           expect(res.error.text).to.contain("Specific email not found.");
-          done();
+        });
+      await chai
+        .request(server)
+        .get("/api/mailbox/test3@example.com/" + new mongoose.Types.ObjectId())
+        .then((res) => {
+          expect(res.status).to.equal(404);
+          expect(res.error.text).to.contain("Specific email not found.");
         });
     });
     it("it should return status 400, bad request, for a malformed email", (done) => {
@@ -134,8 +141,8 @@ describe("api/", () => {
         .end((err, res) => {
           expect(res.status).to.equal(422);
           expect(res.error.text).to.contain("is not available");
-          done();
-        });
+          done()
+        })
     });
   });
 });
