@@ -22,14 +22,14 @@ describe("api/", () => {
       to: "test1@example.com",
       from: "begone-tester@localhost",
       subject: "Test email 1",
-      htmlBody: "The Body",
+      htmlBody: "The Body 1",
     });
     const emailTwo = new Email({
       _id: emailTwoId,
       to: "test1@example.com",
       from: "begone-tester@localhost",
-      subject: "Test email 1",
-      htmlBody: "The Body",
+      subject: "Test email 2",
+      htmlBody: "The Body 2",
     });
     const mailbox = new EmailBox({
       _id: "test1@example.com",
@@ -80,6 +80,57 @@ describe("api/", () => {
       chai
         .request(server)
         .get("/api/mailbox/test1@google.com")
+        .end((err, res) => {
+          expect(res.status).to.equal(422);
+          expect(res.error.text).to.contain("is not available");
+          done();
+        });
+    });
+  });
+
+  describe("/GET mailbox/:email/:emailId", () => {
+    it("it should return a mailbox with the email requested", (done) => {
+      chai
+        .request(server)
+        .get("/api/mailbox/test1@example.com/" + emailOneId)
+        .end((err, res) => {
+          expect(res.status).to.equal(200);
+          expect(res.body).to.be.a("Object");
+          expect(res.body.emails).to.be.an("array");
+          expect(res.body.emails.length).to.equal(1);
+          expect(res.body.emails[0]._id).to.equal(emailOneId.toString());
+          expect(res.body.emails[0].to).to.equal("test1@example.com");
+          expect(res.body.emails[0].from).to.equal("begone-tester@localhost");
+          expect(res.body.emails[0].subject).to.equal("Test email 1");
+          expect(res.body.emails[0].htmlBody).to.equal("The Body 1");
+          done();
+        });
+    });
+
+    it("it should return status 404, not found, when a specific email is not found", (done) => {
+      chai
+        .request(server)
+        .get("/api/mailbox/test1@example.com/" + new mongoose.Types.ObjectId())
+        .end((err, res) => {
+          expect(res.status).to.equal(404);
+          expect(res.error.text).to.contain("Specific email not found.");
+          done();
+        });
+    });
+    it("it should return status 400, bad request, for a malformed email", (done) => {
+      chai
+        .request(server)
+        .get("/api/mailbox/test1@example/" + emailOneId)
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          expect(res.error.text).to.contain("isn't a valid email");
+          done();
+        });
+    });
+    it("it should return status 422, unprocessable entity, for a domain not permitted", (done) => {
+      chai
+        .request(server)
+        .get("/api/mailbox/test1@google.com/" + emailOneId)
         .end((err, res) => {
           expect(res.status).to.equal(422);
           expect(res.error.text).to.contain("is not available");
