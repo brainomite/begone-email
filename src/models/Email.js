@@ -5,7 +5,7 @@ const EmailSchema = new Schema(
     to: String,
     from: String,
     subject: String,
-    date: { type: Date, default: Date.UTC },
+    date: { type: Date, default: Date.now },
     htmlBody: String,
     isRead: { type: Boolean, default: false },
   },

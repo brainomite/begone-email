@@ -27,7 +27,7 @@ module.exports = function sendTestEmail(recipientAddress) {
       // File Stream attachment
       {
         filename: "happy.png",
-        path: "assets/happy.png",
+        path: "src/assets/happy.png",
         cid: "begone@mydomain.com",
       },
     ],
