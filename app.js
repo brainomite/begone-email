@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const startSmtpServer = require("./src/api/servers/smtp-server");
 const mailbox = require("./src/api/routes/api/mailbox");
+const deleteOldEmails = require("./src/util/delete-old-emails");
+const config = require("./src/config/config");
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -20,7 +22,6 @@ mongoose
     useUnifiedTopology: true,
     useFindAndModify: false,
   })
-  // .then(() => mongoose.connection.db.dropCollection("emailboxes")) // TODO remove
   .then(() => {
     console.log("Connected to MongoDB successfully");
     if (typeof run === "function") {
@@ -36,5 +37,11 @@ startSmtpServer();
 app.listen(port, () =>
   console.log(`HTTP Server is running at http://127.0.0.1:${port}/`)
 );
+
+if (process.env.NODE_ENV !== "test") {
+  setInterval(() => {
+    deleteOldEmails(config.emailExpiration);
+  }, 600000); // ten minutes
+}
 
 module.exports = app; // For Testing
