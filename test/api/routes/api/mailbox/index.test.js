@@ -191,4 +191,49 @@ describe("api/", () => {
       expect(mailbox.emails[0].isRead).to.be.false;
     });
   });
+
+  describe("DELETE mailbox/:email/:emailId", () => {
+    it("it should delete the specified email, if last email, delete mailbox", async () => {
+      const res = await chai
+        .request(server)
+        .delete("/api/mailbox/test1@example.com/" + emailOneId);
+
+      expect(res.status).to.equal(202);
+      let mailbox = await EmailBox.findById("test1@example.com");
+      expect(mailbox.emails.length).to.equal(1);
+      await chai
+        .request(server)
+        .delete("/api/mailbox/test1@example.com/" + emailTwoId);
+
+      mailbox = await EmailBox.findById("test1@example.com");
+      expect(mailbox).to.be.null;
+    });
+    it("it should return 202 whether the mailbox exists or not", async () => {
+      const res = await chai
+        .request(server)
+        .delete("/api/mailbox/test2@example.com/" + emailOneId);
+
+      expect(res.status).to.equal(202);
+    });
+    it("it should return status 400, bad request, for a malformed email", (done) => {
+      chai
+        .request(server)
+        .delete("/api/mailbox/test1@example/" + emailOneId)
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          expect(res.error.text).to.contain("isn't a valid email");
+          done();
+        });
+    });
+    it("it should return status 422, unprocessable entity, for a domain not permitted", (done) => {
+      chai
+        .request(server)
+        .delete("/api/mailbox/test1@google.com/" + emailOneId)
+        .end((err, res) => {
+          expect(res.status).to.equal(422);
+          expect(res.error.text).to.contain("is not available");
+          done();
+        });
+    });
+  });
 });

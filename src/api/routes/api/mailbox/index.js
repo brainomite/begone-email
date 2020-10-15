@@ -10,11 +10,37 @@ const validateEmail = require("../../../../util/validate-email");
 const sendTestEmail = require("../../../../util/send-test-email");
 const EmailBox = require("../../../../models/EmailBox");
 
-router.get("/mailbox/:email", handleGetMailbox);
-router.post("/mailbox/:email", handlePostMailbox);
-router.get("/mailbox/:email/:emailId", handleGetEmail);
+router.route("/mailbox/:email").get(handleGetMailbox).post(handlePostMailbox);
+router
+  .route("/mailbox/:email/:emailId")
+  .get(handleGetEmail)
+  .delete(handleDeleteEmail);
 
 module.exports = router;
+
+async function handleDeleteEmail({ params: { email, emailId } }, res) {
+  // validations
+  const validationFailure = validateEmail(email); // falsy if validation succeeds
+  if (validationFailure) {
+    res.status(validationFailure.status).send(validationFailure.msg);
+    return;
+  }
+  if (!validator.isMongoId(emailId)) {
+    res.status(BAD_REQUEST).send(`${emailId} isn't in the correct format`);
+    return;
+  }
+
+  const mailbox = await EmailBox.findById(email);
+  if (mailbox) {
+    await mailbox.emails.pull(emailId);
+    if (mailbox.emails.length) {
+      await mailbox.save();
+    } else {
+      await mailbox.delete();
+    }
+  }
+  res.status(202).send();
+}
 
 async function handleGetMailbox({ params: { email } }, res) {
   const validationFailure = validateEmail(email); // falsy if validation succeeds
