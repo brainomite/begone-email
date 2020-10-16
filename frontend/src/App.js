@@ -1,11 +1,16 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import GithubCorner from "react-github-corners";
+import "react-github-corners/dist/GithubCorner.css";
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <a href="https://github.com/brainomite/begone-email" target="_blank">
+          <GithubCorner svgStyle={{ stroke: "blue" }} />
+        </a>
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.

@@ -1,6 +1,6 @@
 const { expect } = require("chai");
 const chaiHttp = require("chai-http");
-const server = require("../../app");
+const server = require("../../server");
 const mongoose = require("mongoose");
 const { Email } = require("../../src/models/Email");
 const EmailBox = require("../../src/models/EmailBox");

@@ -1,5 +1,5 @@
 let chai = require("chai");
-let server = require("../../../../app");
+let server = require("../../../../server");
 let expect = chai.expect;
 
 describe("GET api/domains", () => {

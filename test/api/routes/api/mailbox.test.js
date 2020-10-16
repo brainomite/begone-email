@@ -5,7 +5,7 @@ let EmailBox = require("../../../../src/models/EmailBox");
 //Require the dev-dependencies
 let chai = require("chai");
 let chaiHttp = require("chai-http");
-let server = require("../../../../app");
+let server = require("../../../../server");
 let expect = chai.expect;
 
 chai.use(chaiHttp);
