@@ -1,11 +1,11 @@
 let mongoose = require("mongoose");
-let { Email } = require("../../../../../src/models/Email");
-let EmailBox = require("../../../../../src/models/EmailBox");
+let { Email } = require("../../../../src/models/Email");
+let EmailBox = require("../../../../src/models/EmailBox");
 
 //Require the dev-dependencies
 let chai = require("chai");
 let chaiHttp = require("chai-http");
-let server = require("../../../../../app");
+let server = require("../../../../app");
 let expect = chai.expect;
 
 chai.use(chaiHttp);

@@ -6,9 +6,9 @@ const router = express.Router();
 const CREATED = 201;
 const INTERNAL_SERVER_ERROR = 500;
 const BAD_REQUEST = 400;
-const validateEmail = require("../../../../util/validate-email");
-const sendTestEmail = require("../../../../util/send-test-email");
-const EmailBox = require("../../../../models/EmailBox");
+const validateEmail = require("../../../util/validate-email");
+const sendTestEmail = require("../../../util/send-test-email");
+const EmailBox = require("../../../models/EmailBox");
 
 router.route("/mailbox/:email").get(handleGetMailbox).post(handlePostMailbox);
 router
