@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const startSmtpServer = require("./src/api/servers/smtp-server");
 const mailbox = require("./src/api/routes/api/mailbox");
+const domains = require('./src/api/routes/api/domains')
 const deleteOldEmails = require("./src/util/delete-old-emails");
 const config = require("./src/config/config");
 
@@ -14,6 +15,7 @@ app.use(bodyParser.json());
 
 app.get("/", (req, res) => res.send("Hello World"));
 app.use(API_ROUTE, mailbox);
+app.use(API_ROUTE, domains);
 
 const { mongoURI: db, port } = require("./src/config/config");
 mongoose
