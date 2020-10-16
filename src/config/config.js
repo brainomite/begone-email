@@ -1,7 +1,14 @@
 require("dotenv").config();
 const validator = require("validator");
 
-const { MONGO_URI, PORT, SMTP_PORT, DOMAINS, HOST_NAME } = process.env;
+const {
+  MONGO_URI,
+  PORT,
+  SMTP_PORT,
+  DOMAINS,
+  HOST_NAME,
+  EMAIL_EXPIRATION,
+} = process.env;
 if (!DOMAINS) {
   throw new Error(
     "No domains specified in .env or environment variables, please specify at least one for the DOMAINS variable"
@@ -32,6 +39,7 @@ const configObj = {
     acc[domain] = true;
     return acc;
   }, {}),
+  emailExpiration: EMAIL_EXPIRATION,
 };
 
 module.exports = Object.freeze(configObj);
