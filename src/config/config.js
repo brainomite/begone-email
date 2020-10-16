@@ -8,6 +8,7 @@ const {
   DOMAINS,
   HOST_NAME,
   EMAIL_EXPIRATION,
+  NODE_ENV
 } = process.env;
 if (!DOMAINS) {
   throw new Error(
@@ -40,6 +41,7 @@ const configObj = {
     return acc;
   }, {}),
   emailExpiration: EMAIL_EXPIRATION,
+  nodeEnv: NODE_ENV
 };
 
 module.exports = Object.freeze(configObj);

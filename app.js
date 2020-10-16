@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const startSmtpServer = require("./src/api/servers/smtp-server");
 const mailbox = require("./src/api/routes/api/mailbox");
-const domains = require('./src/api/routes/api/domains')
+const domains = require("./src/api/routes/api/domains");
 const deleteOldEmails = require("./src/util/delete-old-emails");
 const config = require("./src/config/config");
 
@@ -13,7 +13,13 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.get("/", (req, res) => res.send("Hello World"));
+if (config.nodeEnv === "production") {
+  app.use(express.static("frontend/build"));
+  app.get("/", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
+  });
+}
+
 app.use(API_ROUTE, mailbox);
 app.use(API_ROUTE, domains);
 
