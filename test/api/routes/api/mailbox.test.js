@@ -1,11 +1,11 @@
 let mongoose = require("mongoose");
-let { Email } = require("../../../../../src/models/Email");
-let EmailBox = require("../../../../../src/models/EmailBox");
+let { Email } = require("../../../../src/models/Email");
+let EmailBox = require("../../../../src/models/EmailBox");
 
 //Require the dev-dependencies
 let chai = require("chai");
 let chaiHttp = require("chai-http");
-let server = require("../../../../../app");
+let server = require("../../../../app");
 let expect = chai.expect;
 
 chai.use(chaiHttp);
@@ -13,7 +13,7 @@ chai.use(chaiHttp);
 const emailOneId = new mongoose.Types.ObjectId();
 const emailTwoId = new mongoose.Types.ObjectId();
 //Our parent block
-describe("api/", () => {
+describe("api/mailbox", () => {
   beforeEach(async () => {
     //Before each test we empty the database
     await EmailBox.deleteMany({});
@@ -38,7 +38,7 @@ describe("api/", () => {
     await mailbox.save();
   });
 
-  describe("GET mailbox/:email", () => {
+  describe("GET /:email", () => {
     it("it should return return a default empty mailbox for the email provided if no email boxes are found", (done) => {
       chai
         .request(server)
@@ -88,7 +88,7 @@ describe("api/", () => {
     });
   });
 
-  describe("GET mailbox/:email/:emailId", () => {
+  describe("GET /:email/:emailId", () => {
     it("it should return a mailbox with the email requested", (done) => {
       chai
         .request(server)
@@ -146,7 +146,7 @@ describe("api/", () => {
     });
   });
 
-  describe("POST mailbox/:email/", () => {
+  describe("POST /:email/", () => {
     it("it should return status 400, bad request, for a malformed email", (done) => {
       chai
         .request(server)
@@ -192,7 +192,7 @@ describe("api/", () => {
     });
   });
 
-  describe("DELETE mailbox/:email/:emailId", () => {
+  describe("DELETE :email/:emailId", () => {
     it("it should delete the specified email, if last email, delete mailbox", async () => {
       const res = await chai
         .request(server)
