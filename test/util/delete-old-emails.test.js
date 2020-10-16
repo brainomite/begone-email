@@ -11,7 +11,7 @@ const emailOneId = new mongoose.Types.ObjectId();
 const emailTwoId = new mongoose.Types.ObjectId();
 const emailThreeId = new mongoose.Types.ObjectId();
 
-describe.only("deleteOldEmails()", () => {
+describe("deleteOldEmails()", () => {
   beforeEach(async () => {
     //Before each test we empty the database
     await EmailBox.deleteMany({});
